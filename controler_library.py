@@ -32,12 +32,16 @@ def add_student():
 
 @app.route('/delete_student', methods=['DELETE'])
 def delete_student():
-    content = request.get_json()
+    # content = request.get_json()
+    id = request.form['id']
+    content = {'id': id}
     repository_student = RepositoryStudent()
     converter = Converter()
     id = converter.get_student_id(content)
     repository_student.delete_student(id)
-    return f"Usunięto studenta o nr {id}."
+    delete_answer = f"Usunięto studenta o id {id}."
+    delete_answer_dict = {"message": delete_answer}
+    return delete_answer_dict
 
 @app.route('/update_student', methods=['POST'])
 def update_student():
@@ -48,12 +52,16 @@ def update_student():
     repository_student.update_student(student)
     return content
 
-@app.route('/select_student_by_username', methods=['GET'])
+@app.route('/select_student_by_username', methods=['POST'])
 def select_student_by_username():
-    content = request.get_json()
+    # content = request.get_json()
+    username = request.form['username']
+    content = {'username': username}
     repository_student = RepositoryStudent()
     student = repository_student.select_student_by_username(content["username"])
     student_json = json.dumps(student.__dict__)
+    print("dupa")
+    print(student_json)
     return student_json
 
 @app.route('/get_all_students', methods=['GET'])
