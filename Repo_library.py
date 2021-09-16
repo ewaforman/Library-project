@@ -41,7 +41,8 @@ class RepositoryStudent:
             student = Student(name, surname, username, id)
             student_json = json.dumps(student.__dict__)
             conn.commit()
-            return student_json
+            add_student_accept = "Dodałeś nowego studenta"
+            return add_student_accept
 
     def delete_student(self, id):
         c, conn = connect_to_db()
@@ -191,6 +192,24 @@ class RepositoryHire:
                   f"hire_books.date_return, hire_books.id FROM hire_books LEFT JOIN students ON hire_books.id_student "
                   f"= students.id LEFT JOIN books ON hire_books.id_book = books.id  "
                   f"WHERE id_book = '{hire.id_book}' and id_student='{hire.id_student}'")
+        myresult = c.fetchall()
+        full_info_hire_all = []
+        for krotka in myresult:
+            id_book, id_student, student_name, student_surname, author_name, author_surname, title, date_hire, \
+            date_return, id = krotka
+            full_hire = Hire(id_book, id_student, date_hire, date_return, id, student_name, student_surname,
+                             author_name, author_surname, title)
+            full_info_hire_all.append(full_hire)
+        conn.commit()
+        return full_info_hire_all
+
+    def get_all_hires(self):
+        c, conn = connect_to_db()
+        c.execute(f"SELECT hire_books.id_book, hire_books.id_student, students.name, "
+                  f"students.surname, books.name, books.surname, books.title, hire_books.date_hire, "
+                  f"hire_books.date_return, hire_books.id FROM hire_books LEFT JOIN students ON hire_books.id_student "
+                  f"= students.id LEFT JOIN books ON hire_books.id_book = books.id  ")
+
         myresult = c.fetchall()
         full_info_hire_all = []
         for krotka in myresult:

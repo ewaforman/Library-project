@@ -10,12 +10,25 @@ app = Flask(__name__)
 
 @app.route('/add_student', methods=['POST'])
 def add_student():
-    content = request.get_json()
+    name = request.form['name']
+    surname = request.form['surname']
+    username = request.form['username']
+    content = {'name': name, 'surname': surname, 'username': username}
+    request1 = request
+    print(request)
+    # print(content)
+
+    # content = request.get_json()
+    # print(type(content))
+    # print(content)
     repository_student = RepositoryStudent()
     converter = Converter()
     student = converter.convert_student_to_obj(content)
     add_student_answer = repository_student.add_student(student)
-    return add_student_answer
+    answer_dict = {'message': add_student_answer}
+    answer_json = json.dumps(answer_dict)
+    print(type(answer_json))
+    return answer_dict
 
 @app.route('/delete_student', methods=['DELETE'])
 def delete_student():
@@ -56,7 +69,9 @@ def count_all_student():
     repository_student = RepositoryStudent()
     number_of_students = repository_student.count_all_students()
     number_of_students = str(number_of_students)
-    return f"Liczba studentów w bazie to: {number_of_students}."
+    number_of_students_dict = {"number": number_of_students}
+    print(number_of_students_dict)
+    return number_of_students_dict
 
 @app.route('/add_book', methods=['POST'])
 def add_book():
@@ -137,6 +152,23 @@ def get_full_info_hire():
     hire_full_info_list = repository_hire.get_full_info_hire(hire_obj)
     hire_full_info_json = json.dumps(hire_full_info_list, default=converter.obj_dict)
     return hire_full_info_json
+
+@app.route('/get_all_hires', methods=['GET'])
+def get_all_hires():
+    # content = request.get_json()
+    # repository_hire = RepositoryHire()
+    # converter = Converter()
+    # hire_obj = converter.convert_full_hire(content)
+    # hire_full_info_list = repository_hire.get_all_hires()
+    # hire_full_info_json = json.dumps(hire_full_info_list, default=converter.obj_dict)
+    # return hire_full_info_json
+
+    repository_hire = RepositoryHire()
+    hire_list = repository_hire.get_all_hires()
+    converter = Converter()
+    hire_json_list = json.dumps(hire_list, default=converter.obj_dict)
+    print(hire_json_list)
+    return hire_json_list
 
 
 if __name__ == '__main__':
