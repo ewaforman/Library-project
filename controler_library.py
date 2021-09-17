@@ -83,7 +83,11 @@ def count_all_student():
 
 @app.route('/add_book', methods=['POST'])
 def add_book():
-    content = request.get_json()
+    # content = request.get_json()
+    name = request.form['name']
+    surname = request.form['surname']
+    title = request.form['title']
+    content = {'name': name, 'surname': surname, 'title': title}
     repository_book = RepositoryBooks()
     converter = Converter()
     book = converter.convert_book_to_obj(content)
@@ -93,29 +97,42 @@ def add_book():
 
 @app.route('/delete_book', methods=['DELETE'])
 def delete_book():
-    content = request.get_json()
+    # content = request.get_json()
+    id = request.form['id']
+    content = {'id': id}
     repository_book = RepositoryBooks()
     converter = Converter()
     id = converter.get_book_id(content)
     repository_book.delete_book(id)
-    return f"Usunięto książkę o nr {id}."
+    delete_answer = f"Usunięto książkę o id {id}."
+    delete_answer_dict = {"message": delete_answer}
+    return delete_answer_dict
+
 
 @app.route('/update_book', methods=['POST'])
 def update_book():
-    content = request.get_json()
+    name = request.form['name']
+    surname = request.form['surname']
+    title = request.form['title']
+    content = {'name': name, 'surname': surname, 'title': title}
+    # content = request.get_json()
     repository_book = RepositoryBooks()
     converter = Converter()
     book = converter.convert_book_to_obj_by_id(content)
     repository_book.update_book(book)
     return content
 
-@app.route('/select_book_by_status', methods=['GET'])
+@app.route('/select_book_by_status', methods=['POST'])
 def select_book_by_status():
-    content = request.get_json()
+    # content = request.get_json()
+    print("dupa")
+    status = request.form['status']
+    content = {'status': status}
     repository_book = RepositoryBooks()
     book_list_status = repository_book.select_book_by_status(content["status"])
     converter = Converter()
     books_json_list = json.dumps(book_list_status, default=converter.obj_dict)
+    print(books_json_list)
     return books_json_list
 
 @app.route('/get_all_books', methods=['GET'])
@@ -131,7 +148,8 @@ def count_all_books():
     repository_book = RepositoryBooks()
     number_of_books = repository_book.count_all_books()
     number_of_books = str(number_of_books)
-    return f"Liczba ksiazek w bazie to: {number_of_books}."
+    number_of_books_dict = {"number": number_of_books}
+    return number_of_books_dict
 
 @app.route('/add_hire', methods=['POST'])
 def add_hire():
