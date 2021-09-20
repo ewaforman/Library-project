@@ -26,8 +26,9 @@ def add_student():
     student = converter.convert_student_to_obj(content)
     add_student_answer = repository_student.add_student(student)
     answer_dict = {'message': add_student_answer}
-    answer_json = json.dumps(answer_dict)
-    print(type(answer_json))
+    print(answer_dict)
+    # answer_json = json.dumps(answer_dict)
+    # print(type(answer_json))
     return answer_dict
 
 @app.route('/delete_student', methods=['DELETE'])
@@ -92,7 +93,8 @@ def add_book():
     converter = Converter()
     book = converter.convert_book_to_obj(content)
     repository_book.add_book(book)
-    return "Dodano nową książkę."
+    answer_dict = {"message": "Dodano nową książkę."}
+    return answer_dict
 
 
 @app.route('/delete_book', methods=['DELETE'])
@@ -153,21 +155,31 @@ def count_all_books():
 
 @app.route('/add_hire', methods=['POST'])
 def add_hire():
-    content = request.get_json()
+    # content = request.get_json()
+    id_book = request.form['id_book']
+    id_student = request.form['id_student']
+    date_hire = request.form['date_hire']
+    content = {'id_book': id_book, 'id_student': id_student, 'date_hire': date_hire}
     repository_hire = RepositoryHire()
     converter = Converter()
     hire = converter.convert_hire_to_obj(content)
     hire_info = repository_hire.add_hire(hire)
-    return hire_info
+    hire_info_json = {"message": hire_info}
+    print(hire_info_json)
+    return hire_info_json
 
 @app.route('/return_hire', methods=['POST'])
 def return_hire():
-    content = request.get_json()
+    # content = request.get_json()
+    id_book = request.form['id_book']
+    date_return = request.form['date_return']
+    content = {'id_book': id_book, 'date_return': date_return}
     repository_hire_return = RepositoryHire()
     converter = Converter()
     hire = converter.convert_return_book_to_obj(content)
     return_info = repository_hire_return.return_book(hire)
-    return return_info
+    return_info_json = {"message": return_info}
+    return return_info_json
 
 @app.route('/get_full_info_hire', methods=['GET'])
 def get_full_info_hire():

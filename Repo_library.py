@@ -182,7 +182,8 @@ class RepositoryHire:
         c, conn = connect_to_db()
         c.execute(f"UPDATE books SET status = 'available' WHERE id = '{hire.id_book}'")
         conn.commit()
-        return f"Ksiazka o {hire.id_book} zostala oddana."
+        answer = f"Ksiazka o id {hire.id_book} zostala oddana."
+        return answer
 
 
     def get_full_info_hire(self, hire):
