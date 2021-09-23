@@ -14,9 +14,6 @@ def add_student():
     surname = request.form['surname']
     username = request.form['username']
     content = {'name': name, 'surname': surname, 'username': username}
-    request1 = request
-    print(request)
-    # print(content)
 
     # content = request.get_json()
     # print(type(content))
@@ -28,7 +25,6 @@ def add_student():
     answer_dict = {'message': add_student_answer}
     print(answer_dict)
     # answer_json = json.dumps(answer_dict)
-    # print(type(answer_json))
     return answer_dict
 
 @app.route('/delete_student', methods=['DELETE'])
@@ -61,8 +57,6 @@ def select_student_by_username():
     repository_student = RepositoryStudent()
     student = repository_student.select_student_by_username(content["username"])
     student_json = json.dumps(student.__dict__)
-    print("dupa")
-    print(student_json)
     return student_json
 
 @app.route('/get_all_students', methods=['GET'])
@@ -79,7 +73,6 @@ def count_all_student():
     number_of_students = repository_student.count_all_students()
     number_of_students = str(number_of_students)
     number_of_students_dict = {"number": number_of_students}
-    print(number_of_students_dict)
     return number_of_students_dict
 
 @app.route('/add_book', methods=['POST'])
@@ -127,15 +120,23 @@ def update_book():
 @app.route('/select_book_by_status', methods=['POST'])
 def select_book_by_status():
     # content = request.get_json()
-    print("dupa")
     status = request.form['status']
     content = {'status': status}
     repository_book = RepositoryBooks()
     book_list_status = repository_book.select_book_by_status(content["status"])
     converter = Converter()
     books_json_list = json.dumps(book_list_status, default=converter.obj_dict)
-    print(books_json_list)
     return books_json_list
+
+@app.route('/select_book_by_id', methods=['POST'])
+def select_book_by_id():
+    id = request.form['id']
+    content = {'id': id}
+    repository_book = RepositoryBooks()
+    book = repository_book.select_book_by_id(content["id"])
+    book_json = json.dumps(book.__dict__)
+    return book_json
+
 
 @app.route('/get_all_books', methods=['GET'])
 def get_all_books():
@@ -165,7 +166,6 @@ def add_hire():
     hire = converter.convert_hire_to_obj(content)
     hire_info = repository_hire.add_hire(hire)
     hire_info_json = {"message": hire_info}
-    print(hire_info_json)
     return hire_info_json
 
 @app.route('/return_hire', methods=['POST'])
@@ -205,7 +205,6 @@ def get_all_hires():
     hire_list = repository_hire.get_all_hires()
     converter = Converter()
     hire_json_list = json.dumps(hire_list, default=converter.obj_dict)
-    print(hire_json_list)
     return hire_json_list
 
 

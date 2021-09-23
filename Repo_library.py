@@ -125,6 +125,15 @@ class RepositoryBooks:
             book_list_status.append(book)
         return book_list_status
 
+    def select_book_by_id(self, id):
+        c, conn = connect_to_db()
+        c.execute(f"SELECT * FROM books WHERE id = '{id}'")
+        myresult = c.fetchall()
+
+        name, surname, title, status, id = myresult[0]
+        book = Book(name, surname, title, status, id)
+        return book
+
     def get_all_books(self):
         c, conn = connect_to_db()
         c.execute(f"SELECT * FROM books")
@@ -144,8 +153,6 @@ class RepositoryBooks:
 
         myresult = c.fetchall()
         number_all_books = myresult[0][0]
-        print("Liczba ksiazek w bazie:", number_all_books)
-
         return number_all_books
 
 
