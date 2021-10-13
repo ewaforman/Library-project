@@ -8,6 +8,7 @@ from converter_class import Converter
 
 app = Flask(__name__)
 
+
 @app.route('/add_student', methods=['POST'])
 def add_student():
     name = request.form['name']
@@ -27,6 +28,7 @@ def add_student():
     # answer_json = json.dumps(answer_dict)
     return answer_dict
 
+
 @app.route('/delete_student', methods=['DELETE'])
 def delete_student():
     # content = request.get_json()
@@ -35,8 +37,7 @@ def delete_student():
     repository_student = RepositoryStudent()
     converter = Converter()
     id = converter.get_student_id(content)
-    repository_student.delete_student(id)
-    delete_answer = f"Usunięto studenta o id {id}."
+    delete_answer = repository_student.delete_student(id)
     delete_answer_dict = {"message": delete_answer}
     return delete_answer_dict
 

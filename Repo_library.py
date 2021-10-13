@@ -41,13 +41,26 @@ class RepositoryStudent:
             student = Student(name, surname, username, id)
             student_json = json.dumps(student.__dict__)
             conn.commit()
-            add_student_accept = "Dodałeś nowego studenta"
+            add_student_accept = "Dodałeś nowego studenta."
             return add_student_accept
 
-    def delete_student(self, id):
+    def delete_student(self, id_student):
         c, conn = connect_to_db()
-        c.execute(f"DELETE FROM students WHERE id = '{id}'")
-        conn.commit()
+        c.execute(f"SELECT id FROM students")
+        myresult = c.fetchall()
+        id_list = []
+        for krotka in myresult:
+            id = krotka
+            id_list.append(id[0])
+        id_student_int = int(id_student)
+        if id_student_int in id_list:
+            c.execute(f"DELETE FROM students WHERE id = '{id_student_int}'")
+            conn.commit()
+            delete_student_answer = "Usunięto studenta."
+            return delete_student_answer
+        else:
+            delete_student_answer = "Nie ma takiego studenta w bazie."
+            return delete_student_answer
 
     def update_student(self, student):
         c, conn = connect_to_db()
