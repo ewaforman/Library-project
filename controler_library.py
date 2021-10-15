@@ -52,13 +52,25 @@ def update_student():
 
 @app.route('/select_student_by_username', methods=['POST'])
 def select_student_by_username():
-    # content = request.get_json()
+    content = request.get_json()
     username = request.form['username']
     content = {'username': username}
     repository_student = RepositoryStudent()
-    student = repository_student.select_student_by_username(content["username"])
+    answer, student = repository_student.select_student_by_username(content["username"])
     student_json = json.dumps(student.__dict__)
-    return student_json
+    answer_dict = {"message": answer, "name": student.name, "surname": student.surname,
+                   "username": student.username, "id": student.id}
+    print(answer_dict['message'])
+    return answer_dict
+
+    # content = request.get_json()
+    # username = request.form['username']
+    # content = {'username': username}
+    # repository_student = RepositoryStudent()
+    # student = repository_student.select_student_by_username(content["username"])
+    # student_json = json.dumps(student.__dict__)
+    # return student_json
+
 
 @app.route('/get_all_students', methods=['GET'])
 def get_all_student():

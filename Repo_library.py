@@ -70,12 +70,38 @@ class RepositoryStudent:
 
     def select_student_by_username(self, username):
         c, conn = connect_to_db()
-        c.execute(f"SELECT * FROM students WHERE username = '{username}'")
+        # c.execute(f"SELECT * FROM students WHERE username = '{username}'")
+        c.execute(f"SELECT username FROM students")
         myresult = c.fetchall()
 
-        id, name, surname, username = myresult[0]
-        student = Student(name, surname, username, id)
-        return student
+        username_list = []
+        for krotka in myresult:
+            id = krotka
+            username_list.append(id[0])
+
+        if username in username_list:
+            c.execute(f"SELECT * FROM students WHERE username = '{username}'")
+            myresult_username = c.fetchall()
+            conn.commit()
+            select_student_answer = "Znaleziono studenta."
+            id, name, surname, username = myresult_username[0]
+            student = Student(name, surname, username, id)
+            return select_student_answer, student
+        else:
+            select_student_answer = "Nie ma takiego studenta w bazie."
+            student = Student("", "", "", "")
+            return select_student_answer, student
+
+        # id, name, surname, username = myresult[0]
+        # student = Student(name, surname, username, id)
+        # return student
+
+        # c, conn = connect_to_db()
+        # c.execute(f"SELECT * FROM students WHERE username = '{username}'")
+        # myresult = c.fetchall()
+        # id, name, surname, username = myresult[0]
+        # student = Student(name, surname, username, id)
+        # return student
 
     def get_all_student(self):
         c, conn = connect_to_db()
