@@ -1,3 +1,4 @@
+import werkzeug
 from flask import Flask, request
 import json
 from Repo_library import connect_to_db, RepositoryHire, RepositoryBooks, RepositoryStudent
@@ -16,16 +17,11 @@ def add_student():
     username = request.form['username']
     content = {'name': name, 'surname': surname, 'username': username}
 
-    # content = request.get_json()
-    # print(type(content))
-    # print(content)
     repository_student = RepositoryStudent()
     converter = Converter()
     student = converter.convert_student_to_obj(content)
     add_student_answer = repository_student.add_student(student)
     answer_dict = {'message': add_student_answer}
-    print(answer_dict)
-    # answer_json = json.dumps(answer_dict)
     return answer_dict
 
 
@@ -56,20 +52,9 @@ def select_student_by_username():
     username = request.form['username']
     content = {'username': username}
     repository_student = RepositoryStudent()
-    answer, student = repository_student.select_student_by_username(content["username"])
+    student = repository_student.select_student_by_username(content["username"])
     student_json = json.dumps(student.__dict__)
-    answer_dict = {"message": answer, "name": student.name, "surname": student.surname,
-                   "username": student.username, "id": student.id}
-    print(answer_dict['message'])
-    return answer_dict
-
-    # content = request.get_json()
-    # username = request.form['username']
-    # content = {'username': username}
-    # repository_student = RepositoryStudent()
-    # student = repository_student.select_student_by_username(content["username"])
-    # student_json = json.dumps(student.__dict__)
-    # return student_json
+    return student_json
 
 
 @app.route('/get_all_students', methods=['GET'])
@@ -219,6 +204,10 @@ def get_all_hires():
     converter = Converter()
     hire_json_list = json.dumps(hire_list, default=converter.obj_dict)
     return hire_json_list
+
+@app.errorhandler(werkzeug.exceptions.NotFound)
+def handle_bad_request(e):
+    return 'Nie ma takiego studenta w bazie danych.', 404
 
 
 if __name__ == '__main__':

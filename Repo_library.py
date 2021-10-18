@@ -1,4 +1,7 @@
 import sqlite3
+
+from werkzeug.exceptions import NotFound
+
 from student_class import Student
 from book_class import Book
 from hire_class import Hire
@@ -27,21 +30,8 @@ class RepositoryStudent:
             c, conn = connect_to_db()
             c.execute(f"INSERT INTO students (name, surname, username) VALUES ('{student.name}', '{student.surname}',"
                       f" '{student.username}')")
-            # add_student_accept = "Dodano nowego studenta."
-            conn.commit()
-            c, conn = connect_to_db()
-            c.execute(f"SELECT * FROM students WHERE username = '{student.username}'")
-            myresult = c.fetchall()
-            username = ''
-            name = ''
-            surname = ''
-            id = 0
-            for krotka in myresult:
-                id, name, surname, username = krotka
-            student = Student(name, surname, username, id)
-            student_json = json.dumps(student.__dict__)
-            conn.commit()
             add_student_accept = "Dodałeś nowego studenta."
+            conn.commit()
             return add_student_accept
 
     def delete_student(self, id_student):
@@ -70,38 +60,15 @@ class RepositoryStudent:
 
     def select_student_by_username(self, username):
         c, conn = connect_to_db()
-        # c.execute(f"SELECT * FROM students WHERE username = '{username}'")
-        c.execute(f"SELECT username FROM students")
+        c.execute(f"SELECT * FROM students WHERE username = '{username}'")
         myresult = c.fetchall()
-
-        username_list = []
-        for krotka in myresult:
-            id = krotka
-            username_list.append(id[0])
-
-        if username in username_list:
-            c.execute(f"SELECT * FROM students WHERE username = '{username}'")
-            myresult_username = c.fetchall()
-            conn.commit()
-            select_student_answer = "Znaleziono studenta."
-            id, name, surname, username = myresult_username[0]
+        try:
+            id, name, surname, username = myresult[0]
             student = Student(name, surname, username, id)
-            return select_student_answer, student
-        else:
-            select_student_answer = "Nie ma takiego studenta w bazie."
-            student = Student("", "", "", "")
-            return select_student_answer, student
-
-        # id, name, surname, username = myresult[0]
-        # student = Student(name, surname, username, id)
-        # return student
-
-        # c, conn = connect_to_db()
-        # c.execute(f"SELECT * FROM students WHERE username = '{username}'")
-        # myresult = c.fetchall()
-        # id, name, surname, username = myresult[0]
-        # student = Student(name, surname, username, id)
-        # return student
+            conn.commit()
+            return student
+        except IndexError:
+            raise NotFound(IndexError)
 
     def get_all_student(self):
         c, conn = connect_to_db()
