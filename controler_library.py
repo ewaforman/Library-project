@@ -83,8 +83,8 @@ def add_book():
     repository_book = RepositoryBooks()
     converter = Converter()
     book = converter.convert_book_to_obj(content)
-    repository_book.add_book(book)
-    answer_dict = {"message": "Dodano nową książkę."}
+    answer = repository_book.add_book(book)
+    answer_dict = {"message": answer}
     return answer_dict
 
 
@@ -205,9 +205,10 @@ def get_all_hires():
     hire_json_list = json.dumps(hire_list, default=converter.obj_dict)
     return hire_json_list
 
+
 @app.errorhandler(werkzeug.exceptions.NotFound)
 def handle_bad_request(e):
-    return 'Nie ma takiego studenta w bazie danych.', 404
+    return "Nie znaleziono takiego studenta w bazie danych.", 404
 
 
 if __name__ == '__main__':

@@ -93,11 +93,27 @@ class RepositoryStudent:
 
 
 class RepositoryBooks:
+    def isValidated(self, book_list):
+        for element in book_list:
+            if element == "":
+                return False
+        return True
+
     def add_book(self, book):
         c, conn = connect_to_db()
-        c.execute(f"INSERT INTO books (name, surname, title, status) VALUES ('{book.name}', '{book.surname}',"
-                  f" '{book.title}', '{book.status}')")
-        conn.commit()
+        list_of_books = [f'{book.name}', f'{book.surname}', f'{book.title}']
+
+        validated = self.isValidated(list_of_books)
+
+        if validated:
+            c.execute(f"INSERT INTO books (name, surname, title, status) VALUES ('{book.name}', '{book.surname}',"
+                      f" '{book.title}', '{book.status}')")
+            conn.commit()
+            add_book_answer = "Dodano nową książkę."
+            return add_book_answer
+        else:
+            add_book_answer = "Wypełnij wszystkie pola."
+            return add_book_answer
 
     def delete_book(self, id):
         c, conn = connect_to_db()
