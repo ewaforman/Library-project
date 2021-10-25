@@ -115,10 +115,23 @@ class RepositoryBooks:
             add_book_answer = "Wypełnij wszystkie pola."
             return add_book_answer
 
-    def delete_book(self, id):
+    def delete_book(self, id_book):
         c, conn = connect_to_db()
-        c.execute(f"DELETE FROM books WHERE id = '{id}'")
-        conn.commit()
+        c.execute(f"SELECT id FROM books")
+        myresult = c.fetchall()
+        id_list = []
+        for krotka in myresult:
+            id = krotka
+            id_list.append(id[0])
+        id_book_int = int(id_book)
+        if id_book_int in id_list:
+            c.execute(f"DELETE FROM books WHERE id = '{id_book_int}'")
+            conn.commit()
+            delete_book_answer = "Usunięto książkę."
+            return delete_book_answer
+        else:
+            delete_book_answer = "Nie ma takiej książki w bazie."
+            return delete_book_answer
 
     def update_book(self, book):
         c, conn = connect_to_db()
@@ -152,9 +165,13 @@ class RepositoryBooks:
         c.execute(f"SELECT * FROM books WHERE id = '{id}'")
         myresult = c.fetchall()
 
-        name, surname, title, status, id = myresult[0]
-        book = Book(name, surname, title, status, id)
-        return book
+        try:
+            name, surname, title, status, id = myresult[0]
+            book = Book(name, surname, title, status, id)
+            conn.commit()
+            return book
+        except IndexError:
+            raise NotFound(IndexError)
 
     def get_all_books(self):
         c, conn = connect_to_db()

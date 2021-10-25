@@ -32,7 +32,7 @@ def delete_student():
     content = {'id': id}
     repository_student = RepositoryStudent()
     converter = Converter()
-    id = converter.get_student_id(content)
+    # id = converter.get_student_id(content)
     delete_answer = repository_student.delete_student(id)
     delete_answer_dict = {"message": delete_answer}
     return delete_answer_dict
@@ -95,12 +95,10 @@ def delete_book():
     content = {'id': id}
     repository_book = RepositoryBooks()
     converter = Converter()
-    id = converter.get_book_id(content)
-    repository_book.delete_book(id)
-    delete_answer = f"Usunięto książkę o id {id}."
+    # id = converter.get_book_id(content)
+    delete_answer = repository_book.delete_book(id)
     delete_answer_dict = {"message": delete_answer}
     return delete_answer_dict
-
 
 @app.route('/update_book', methods=['POST'])
 def update_book():
@@ -208,7 +206,7 @@ def get_all_hires():
 
 @app.errorhandler(werkzeug.exceptions.NotFound)
 def handle_bad_request(e):
-    return "Nie znaleziono takiego studenta w bazie danych.", 404
+    return "Nie znaleziono żądanych informacji.", 404
 
 
 if __name__ == '__main__':
