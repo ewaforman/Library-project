@@ -198,7 +198,7 @@ class RepositoryBooks:
 class RepositoryHire:
     def add_hire(self, hire):
         c, conn = connect_to_db()
-        c.execute(f"SELECT hire_books.id_student, books.status FROM hire_books LEFT JOIN books ON "
+        c.execute(f"SELECT hire_books.id_book, books.status FROM hire_books LEFT JOIN books ON "
                   f"hire_books.id_book = books.id  "
                   f"WHERE id_book = '{hire.id_book}'")
         myresult = c.fetchall()
@@ -207,7 +207,7 @@ class RepositoryHire:
             id_book, status = krotka
 
         if status == 'hired':
-            hire_info_refusal = "Ta książka jest już wypożyczona"
+            hire_info_refusal = "Ta książka jest już wypożyczona."
             return hire_info_refusal
         else:
             c, conn = connect_to_db()
@@ -217,7 +217,7 @@ class RepositoryHire:
             c, conn = connect_to_db()
             c.execute(f"UPDATE books SET status = 'hired' WHERE id = '{hire.id_book}'")
             conn.commit()
-            hire_info_accept = "Wypoyczyles ksiazke."
+            hire_info_accept = "Wypożyczyłeś książkę."
             return hire_info_accept
 
     def return_book(self, hire):
@@ -228,7 +228,7 @@ class RepositoryHire:
         c, conn = connect_to_db()
         c.execute(f"UPDATE books SET status = 'available' WHERE id = '{hire.id_book}'")
         conn.commit()
-        answer = f"Ksiazka o id {hire.id_book} zostala oddana."
+        answer = "Ksiazka zostala oddana."
         return answer
 
 

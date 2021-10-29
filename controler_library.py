@@ -167,7 +167,7 @@ def add_hire():
 @app.route('/return_hire', methods=['POST'])
 def return_hire():
     # content = request.get_json()
-    id_book = request.form['id_book']
+    id_book = request.form['id_book_return']
     date_return = request.form['date_return']
     content = {'id_book': id_book, 'date_return': date_return}
     repository_hire_return = RepositoryHire()
